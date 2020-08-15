@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
     if (interval) {
         clearInterval(interval);
     }
-    interval = setInterval(() => getApiAndEmit(socket), 1000);
+    //interval = setInterval(() => getApiAndEmit(socket), 1000);
     socket.on('chat message', function (msg) {
         console.log(msg)
        io.emit('chat message', msg);
