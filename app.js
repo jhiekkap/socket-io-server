@@ -6,7 +6,7 @@ const port = process.env.PORT || 4001;
 const index = require("./routes/index");
 
 const app = express();
-app.use(index);
+//app.use(index);
 app.use(express.static('build'));
 
 const server = http.createServer(app);
