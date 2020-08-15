@@ -3,6 +3,9 @@ const http = require("http");
 const socketIo = require("socket.io");
 const cors = require('cors');
 const port = process.env.PORT || 4001;
+
+console.log('PORTTI', port)
+
 const index = require("./routes/index");
 
 const app = express();
