@@ -10,8 +10,8 @@ const index = require("./routes/index");
 
 const app = express();
 app.use(cors());
-app.use(index);
-//app.use(express.static('build'));
+//app.use(index);
+app.use(express.static('build'));
 
 const server = http.createServer(app);
 
