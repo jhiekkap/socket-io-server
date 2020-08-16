@@ -24,7 +24,7 @@ io.on('connection', socket => {
     //Get the chatID of the user and join in a room of the same chatID
     chatID = socket.handshake.query.chatID
     socket.join(chatID)
-
+    console.log('CHAT ID', chatID)
     //Leave the room if the user closes the socket
     socket.on('disconnect', () => {
         socket.leave(chatID)
@@ -36,14 +36,15 @@ io.on('connection', socket => {
         senderChatID = message.senderChatID
         content = message.content
 
-        console.log('RECEIVER', receiverChatID)
         console.log('SENDER', senderChatID)
+        console.log('RECEIVER', receiverChatID)
         console.log('CONTENT', content)
         //Send message to only that particular room
-        socket.in(receiverChatID).emit('receive_message', {
+        //io.emit('receive_message', 'HELLO')
+        socket.to(receiverChatID).emit('receive_message', {
             'content': content,
             'senderChatID': senderChatID,
-            'receiverChatID':receiverChatID,
+            'receiverChatID': receiverChatID,
         })
     })
 });
@@ -64,6 +65,6 @@ io.on('connection', socket => {
     });
 }); */
 
- 
+
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
