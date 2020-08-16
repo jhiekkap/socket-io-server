@@ -29,26 +29,29 @@ io.on('connection', socket => {
     })
 
     socket.on('send_message', message => {
-        const { receiverChatID, senderChatID, content, recipients, type, file } = message
+        const { receiverChatID, senderChatID, content, recipients, type, file, emoiji } = message
 
         console.log('SENDER', senderChatID)
         console.log('RECEIVER', receiverChatID)
         console.log('CONTENT', content)
         console.log('RECIPIENTS', recipients)
         console.log('TYPE', type)
+        console.log('EMOIJI', emoiji)
 
         if (recipients === 'ALL') {
             socket.broadcast.emit('receive_message', {
                 'senderChatID': senderChatID,
                 'content': content,
-                'file': file
+                'file': file,
+                'emoiji':emoiji,
             })
         } else {
             socket.to(receiverChatID).emit('receive_message', {
                 'senderChatID': senderChatID,
                 'receiverChatID': receiverChatID,
                 'content': content,
-                'file': file
+                'file': file,
+                'emoiji':emoiji,
             })
         }
     })
