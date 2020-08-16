@@ -17,8 +17,6 @@ const server = http.createServer(app);
 
 const io = socketIo(server);
 
-let interval;
-
 
 io.on('connection', socket => {
     //Get the chatID of the user and join in a room of the same chatID
@@ -30,22 +28,29 @@ io.on('connection', socket => {
         socket.leave(chatID)
     })
 
-    //Send message to only a particular user
     socket.on('send_message', message => {
-        receiverChatID = message.receiverChatID
-        senderChatID = message.senderChatID
-        content = message.content
+        const { receiverChatID, senderChatID, content, recipients, type, file } = message
 
         console.log('SENDER', senderChatID)
         console.log('RECEIVER', receiverChatID)
         console.log('CONTENT', content)
-        //Send message to only that particular room
-        //io.emit('receive_message', 'HELLO')
-        socket.to(receiverChatID).emit('receive_message', {
-            'content': content,
-            'senderChatID': senderChatID,
-            'receiverChatID': receiverChatID,
-        })
+        console.log('RECIPIENTS', recipients)
+        console.log('TYPE', type)
+
+        if (recipients === 'ALL') {
+            socket.broadcast.emit('receive_message', {
+                'senderChatID': senderChatID,
+                'content': content,
+                'file': file
+            })
+        } else {
+            socket.to(receiverChatID).emit('receive_message', {
+                'senderChatID': senderChatID,
+                'receiverChatID': receiverChatID,
+                'content': content,
+                'file': file
+            })
+        }
     })
 });
 
