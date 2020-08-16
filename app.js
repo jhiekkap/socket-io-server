@@ -19,26 +19,51 @@ const io = socketIo(server);
 
 let interval;
 
-io.on("connection", (socket) => {
+
+io.on('connection', socket => {
+    //Get the chatID of the user and join in a room of the same chatID
+    chatID = socket.handshake.query.chatID
+    socket.join(chatID)
+
+    //Leave the room if the user closes the socket
+    socket.on('disconnect', () => {
+        socket.leave(chatID)
+    })
+
+    //Send message to only a particular user
+    socket.on('send_message', message => {
+        receiverChatID = message.receiverChatID
+        senderChatID = message.senderChatID
+        content = message.content
+
+        console.log('RECEIVER', receiverChatID)
+        console.log('SENDER', senderChatID)
+        console.log('CONTENT', content)
+        //Send message to only that particular room
+        socket.in(receiverChatID).emit('receive_message', {
+            'content': content,
+            'senderChatID': senderChatID,
+            'receiverChatID':receiverChatID,
+        })
+    })
+});
+
+
+/* io.on("connection", (socket) => {
+    //console.log('SOCKET ID', socket.id)
     console.log("New client connected");
-    if (interval) {
-        clearInterval(interval);
-    }
-    //interval = setInterval(() => getApiAndEmit(socket), 1000);
-    socket.on('chat message', function (msg) {
-        console.log(msg)
-       io.emit('chat message', msg);
+   
+    socket.on('chat message', function (msg) { 
+        console.log(msg  )
+       io.emit('chat message', msg );
     });
+  
     socket.on("disconnect", () => {
         console.log("Client disconnected");
         clearInterval(interval);
     });
-});
+}); */
 
-const getApiAndEmit = socket => {
-    const response = new Date();
-    // Emitting a new message. Will be consumed by the client
-    socket.emit("FromAPI", response);
-};
+ 
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
