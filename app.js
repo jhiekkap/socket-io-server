@@ -27,22 +27,25 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         socket.leave(chatID)
     })
-
+   /*  socket.on('videoStream',function(data){
+        socket.broadcast.emit('videoStream',data);
+    }); */
     socket.on('send_message', message => {
-        const { receiverChatID, senderChatID, content, recipients, type, file, emoiji } = message
+        const { receiverChatID, senderChatID, content, recipients, type, videoStream, emoiji } = message
 
-        console.log('SENDER', senderChatID)
+        /* console.log('SENDER', senderChatID)
         console.log('RECEIVER', receiverChatID)
         console.log('CONTENT', content)
         console.log('RECIPIENTS', recipients)
         console.log('TYPE', type)
-        console.log('EMOIJI', emoiji)
+        console.log('EMOIJI', emoiji) */
 
         if (recipients === 'ALL') {
             socket.broadcast.emit('receive_message', {
                 'senderChatID': senderChatID,
+                'receiverChatID': 'Kaikki',
                 'content': content,
-                'file': file,
+                'videoStream': videoStream,
                 'emoiji':emoiji,
             })
         } else {
@@ -50,7 +53,7 @@ io.on('connection', socket => {
                 'senderChatID': senderChatID,
                 'receiverChatID': receiverChatID,
                 'content': content,
-                'file': file,
+                'videoStream': videoStream,
                 'emoiji':emoiji,
             })
         }
