@@ -2,9 +2,9 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require('cors');
-const port = process.env.PORT || 4001; 
+const port = process.env.PORT || 4001;
 const app = express();
-app.use(cors()); 
+app.use(cors());
 app.use(express.static('build'));
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -18,7 +18,7 @@ io.on('connection', socket => {
     //Leave the room if the user closes the socket
     socket.on('disconnect', () => {
         socket.leave(chatID)
-    })  
+    })
     socket.on('send_message', message => {
         const { receiverChatID, senderChatID, content, recipients, type, videoStream, emoji } = message
 
@@ -44,5 +44,5 @@ io.on('connection', socket => {
         }
     })
 });
- 
+
 server.listen(port, () => console.log(`Listening on port ${port}`));
