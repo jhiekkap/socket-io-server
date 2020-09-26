@@ -3,18 +3,12 @@ const http = require("http");
 const socketIo = require("socket.io");
 const cors = require('cors');
 const port = process.env.PORT || 4001;
-
-console.log('PORTTI', port)
-
-const index = require("./routes/index");
-
+//const index = require("./routes/index"); 
 const app = express();
 app.use(cors());
 //app.use(index);
 app.use(express.static('build'));
-
 const server = http.createServer(app);
-
 const io = socketIo(server);
 
 
@@ -27,35 +21,31 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         socket.leave(chatID)
     })
-   /*  socket.on('videoStream',function(data){
-        socket.broadcast.emit('videoStream',data);
-    }); */
+    /*  socket.on('videoStream',function(data){
+         socket.broadcast.emit('videoStream',data);
+     }); */
     socket.on('send_message', message => {
-        const { receiverChatID, senderChatID, content, recipients, type, videoStream, emoiji } = message
+        const { receiverChatID, senderChatID, content, recipients, type, videoStream, emoji } = message
 
         /* console.log('SENDER', senderChatID)
         console.log('RECEIVER', receiverChatID)
         console.log('CONTENT', content)
         console.log('RECIPIENTS', recipients)
         console.log('TYPE', type)
-        console.log('EMOIJI', emoiji) */
+        console.log('EMOJI', emoji) */
+
+        const emittedMessage = {
+            'senderChatID': senderChatID,
+            'receiverChatID': 'Kaikki',
+            'content': content,
+            'videoStream': videoStream,
+            'emoji': emoji,
+        }
 
         if (recipients === 'ALL') {
-            socket.broadcast.emit('receive_message', {
-                'senderChatID': senderChatID,
-                'receiverChatID': 'Kaikki',
-                'content': content,
-                'videoStream': videoStream,
-                'emoiji':emoiji,
-            })
+            socket.broadcast.emit('receive_message', emittedMessage)
         } else {
-            socket.to(receiverChatID).emit('receive_message', {
-                'senderChatID': senderChatID,
-                'receiverChatID': receiverChatID,
-                'content': content,
-                'videoStream': videoStream,
-                'emoiji':emoiji,
-            })
+            socket.to(receiverChatID).emit('receive_message', emittedMessage)
         }
     })
 });
