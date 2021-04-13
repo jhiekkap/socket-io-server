@@ -1,4 +1,4 @@
 - git clone
 - cd socket-io-server
-npm install
-npm start
+- npm install
+- npm start
